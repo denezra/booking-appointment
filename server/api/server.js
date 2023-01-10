@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const dbConfig = require('./config/dbConfig');
-const userRoute = require('./api/user');
-const adminRoute = require('./api/admin');
-const doctorRoute = require('./api/doctor');
+const userRoute = require('./routes/user');
+const adminRoute = require('./routes/admin');
+const doctorRoute = require('./routes/doctor');
 const path = require('path');
 const cors = require('cors');
 
