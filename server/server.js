@@ -37,5 +37,5 @@ const server = http.createServer(app);
 // 	res.sendFile(path.resolve(__dirname, 'client/build/index.html'));
 // });
 
-app.listen(port, () => console.log(`Node server started at port ${port}`));
+server.listen(port, () => console.log(`Node server started at port ${port}`));
 
