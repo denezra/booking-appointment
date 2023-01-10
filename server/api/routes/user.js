@@ -9,10 +9,13 @@ const jwt = require('jsonwebtoken');
 const authMiddleware = require('../middlewares/authMiddleware');
 const moment = require('moment');
 
-router.post('/register', async (req, res) => {
-	try {
+router.post('/register', async (req, res) =>
+{
+	try
+	{
 		const userExists = await User.findOne({ email: req.body.email });
-		if (userExists) {
+		if (userExists)
+		{
 			return res
 				.status(200)
 				.send({ message: 'User already exists', success: false });
@@ -30,7 +33,8 @@ router.post('/register', async (req, res) => {
 		res
 			.status(200)
 			.send({ message: 'User created successfully', success: true });
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error creating user',
 			success: false,
@@ -39,17 +43,21 @@ router.post('/register', async (req, res) => {
 	}
 });
 
-router.post('/login', async (req, res) => {
-	try {
+router.post('/login', async (req, res) =>
+{
+	try
+	{
 		const user = await User.findOne({ email: req.body.email });
-		if (!user) {
+		if (!user)
+		{
 			return res
 				.status(200)
 				.send({ message: 'User does not exist', success: false });
 		}
 
 		const isMatch = await bcrypt.compare(req.body.password, user.password);
-		if (!isMatch) {
+		if (!isMatch)
+		{
 			return res
 				.status(200)
 				.send({ message: 'Password is incorrect', success: false });
@@ -61,7 +69,8 @@ router.post('/login', async (req, res) => {
 		res
 			.status(200)
 			.send({ message: 'Login successful', success: true, data: token });
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error logging in',
 			success: false,
@@ -70,12 +79,15 @@ router.post('/login', async (req, res) => {
 	}
 });
 
-router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
-	try {
+router.post('/get-user-info-by-id', authMiddleware, async (req, res) =>
+{
+	try
+	{
 		const user = await User.findOne({ _id: req.body.userId });
 		user.password = undefined;
 		const userInfo = user.doc;
-		if (!user) {
+		if (!user)
+		{
 			return res
 				.status(200)
 				.send({ message: 'User does not exist', success: false });
@@ -84,7 +96,8 @@ router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
 			success: true,
 			data: user
 		});
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error getting user info  ',
 			success: false,
@@ -93,8 +106,10 @@ router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
 	}
 });
 
-router.post('/apply-doctor-account', authMiddleware, async (req, res) => {
-	try {
+router.post('/apply-doctor-account', authMiddleware, async (req, res) =>
+{
+	try
+	{
 		const newDoctor = new Doctor({ ...req.body, status: 'Pending' });
 
 		await newDoctor.save();
@@ -114,7 +129,8 @@ router.post('/apply-doctor-account', authMiddleware, async (req, res) => {
 			success: true,
 			message: 'Doctor account applied successfully'
 		});
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error applying this account as doctor',
 			success: false,
@@ -126,8 +142,10 @@ router.post('/apply-doctor-account', authMiddleware, async (req, res) => {
 router.post(
 	'/mark-all-notifications-as-seen',
 	authMiddleware,
-	async (req, res) => {
-		try {
+	async (req, res) =>
+	{
+		try
+		{
 			const user = await User.findOne({ _id: req.body.userId });
 			const unseenNotifications = user.unseenNotifications;
 			const seenNotifications = user.seenNotifications;
@@ -141,7 +159,8 @@ router.post(
 				message: 'All notifications marked as seen',
 				data: updateUser
 			});
-		} catch (error) {
+		} catch (error)
+		{
 			res.status(500).send({
 				message: 'Error when marking the notifications',
 				success: false,
@@ -151,8 +170,10 @@ router.post(
 	}
 );
 
-router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
-	try {
+router.post('/delete-all-notifications', authMiddleware, async (req, res) =>
+{
+	try
+	{
 		const user = await User.findOne({ _id: req.body.userId });
 		user.seenNotifications = [];
 		user.unseenNotifications = [];
@@ -163,7 +184,8 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
 			message: 'All notifications cleared',
 			data: updateUser
 		});
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error when deleting the notifications',
 			success: false,
@@ -172,8 +194,10 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
 	}
 });
 
-router.get('/get-all-approved-doctors', authMiddleware, async (req, res) => {
-	try {
+router.get('/get-all-approved-doctors', authMiddleware, async (req, res) =>
+{
+	try
+	{
 		const doctors = await Doctor.find({ status: 'Approved' }).select(
 			'-password'
 		);
@@ -182,7 +206,8 @@ router.get('/get-all-approved-doctors', authMiddleware, async (req, res) => {
 			success: true,
 			data: doctors
 		});
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error when fetching the doctors list',
 			success: false,
@@ -191,8 +216,10 @@ router.get('/get-all-approved-doctors', authMiddleware, async (req, res) => {
 	}
 });
 
-router.post('/book-appointment', authMiddleware, async (req, res) => {
-	try {
+router.post('/book-appointment', authMiddleware, async (req, res) =>
+{
+	try
+	{
 		req.body.status = 'Pending';
 		req.body.date = moment(req.body.date, 'DD-MM-YYYY').toISOString();
 		req.body.time = moment(req.body.time, 'HH:mm').toISOString();
@@ -210,7 +237,8 @@ router.post('/book-appointment', authMiddleware, async (req, res) => {
 			message: 'Booking this appointment is a success',
 			success: true
 		});
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error booking this appointment',
 			success: false,
@@ -219,8 +247,10 @@ router.post('/book-appointment', authMiddleware, async (req, res) => {
 	}
 });
 
-router.post('/check-booking-availability', authMiddleware, async (req, res) => {
-	try {
+router.post('/check-booking-availability', authMiddleware, async (req, res) =>
+{
+	try
+	{
 		const date = moment(req.body.date, 'DD-MM-YYYY').toISOString();
 		const fromTime = moment(req.body.time, 'HH:mm')
 			.subtract(1, 'hours')
@@ -234,18 +264,21 @@ router.post('/check-booking-availability', authMiddleware, async (req, res) => {
 			time: { $gte: fromTime, $lte: toTime }
 		});
 
-		if (appointments.length > 0) {
+		if (appointments.length > 0)
+		{
 			return res.status(200).send({
 				message: 'Appointment is not available',
 				success: false
 			});
-		} else {
+		} else
+		{
 			return res.status(200).send({
 				message: 'Appointment is available',
 				success: true
 			});
 		}
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error booking this appointment',
 			success: false,
@@ -254,8 +287,10 @@ router.post('/check-booking-availability', authMiddleware, async (req, res) => {
 	}
 });
 
-router.get('/get-appointments-by-user-id', authMiddleware, async (req, res) => {
-	try {
+router.get('/get-appointments-by-user-id', authMiddleware, async (req, res) =>
+{
+	try
+	{
 		const appointments = await Appointment.find({ userId: req.body.userId });
 
 		res.status(200).send({
@@ -263,7 +298,8 @@ router.get('/get-appointments-by-user-id', authMiddleware, async (req, res) => {
 			success: true,
 			data: appointments
 		});
-	} catch (error) {
+	} catch (error)
+	{
 		res.status(500).send({
 			message: 'Error when fetching the appointments',
 			success: false,
