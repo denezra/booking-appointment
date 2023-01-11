@@ -1,9 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const dbConfig = require('./api/config/dbConfig');
-const userRoute = require('./api/routes/user');
-const adminRoute = require('./api/routes/admin');
-const doctorRoute = require('./api/routes/doctor');
+const routes = require('./api/routes/index')
 const http = require('http')
 const path = require('path');
 const cors = require('cors');
@@ -18,10 +16,7 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/user', userRoute);
-app.use('/api/admin', adminRoute);
-app.use('/api/doctor', doctorRoute);
-
+app.use("/api/v1", routes)
 
 // app.use((req, res, next) =>
 // {
