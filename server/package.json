@@ -2,14 +2,9 @@
 	"name": "jongco-tmj-ortho-dental",
 	"version": "1.0.0",
 	"description": "Jongco TMJ Ortho Dental Appointment Booking System",
-	"main": "server.js",
+	"main": "index.js",
 	"scripts": {
-		"client-install": "npm install --prefix client",
-		"server": "nodemon server.js",
-		"client": "npm start --prefix client",
-		"dev": "concurrently \"npm run server\" \"npm run client\"",
-		"start": "node server.js",
-		"build": "npm install --prefix client && npm run build --prefix client"
+		"start": "node server.js"
 	},
 	"author": "",
 	"license": "ISC",
