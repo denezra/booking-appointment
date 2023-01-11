@@ -16,7 +16,6 @@ function Login()
 		{
 			dispatch(showLoading());
 			const response = await apiConfig.post('/user/login', values);
-			console.log(response);
 			dispatch(hideLoading());
 			if (response.data.success)
 			{
@@ -31,7 +30,7 @@ function Login()
 		} catch (error)
 		{
 			dispatch(hideLoading());
-			toast.error('Something went wrong', error);
+			toast.error('Something went wrong', error.message);
 		}
 	};
 	return (
