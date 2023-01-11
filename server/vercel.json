@@ -11,7 +11,7 @@
 			"src": "/(.*)",
 			"dest": "/",
 			"headers": {
-				"access-control-allow-origin": "https://booking-appointment-api.vercel.app, https://booking-appointment-pi.vercel.app/",
+				"access-control-allow-origin": "*",
 				"access-control-allow-credentials": "true",
 				"access-control-allow-methods": "GET, POST, HEAD",
 				"access-control-allow-headers": "Accept, Accept-Language, Content-Language, Content-Type, DPR, Downlink, Save-Data, Viewport-Width, Width",
