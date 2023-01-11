@@ -2,37 +2,44 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Layout from '../../components/Layout';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from '../../redux/alertsSlice';
-import axios from 'axios';
 import { Table } from 'antd';
 import { toast } from 'react-hot-toast';
 import moment from 'moment';
+import apiConfig from '../../config/apiConfig';
 
-function DoctorList() {
-	const [doctors, setDoctors] = useState([]);
+function DoctorList()
+{
+	const [ doctors, setDoctors ] = useState([]);
 	const dispatch = useDispatch();
-	const getDoctorsData = useCallback(async () => {
-		try {
+	const getDoctorsData = useCallback(async () =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.get('/api/admin/get-all-doctors', {
+			const response = await apiConfig.get('/admin/get-all-doctors', {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},
 			});
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				setDoctors(response.data.data);
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			toast.error('Something went wrong');
 			dispatch(hideLoading());
 		}
-	}, [dispatch]);
-	const changeDoctorStatus = async (record, status) => {
-		try {
+	}, [ dispatch ]);
+	const changeDoctorStatus = async (record, status) =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.post(
-				'/api/admin/change-doctor-account-status',
+			const response = await apiConfig.post(
+				'/admin/change-doctor-account-status',
 				{ doctorId: record._id, status: status },
 				{
 					headers: {
@@ -41,20 +48,24 @@ function DoctorList() {
 				}
 			);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				getDoctorsData();
-			} else {
+			} else
+			{
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			toast.error('Something went wrong');
 			dispatch(hideLoading());
 		}
 	};
-	useEffect(() => {
+	useEffect(() =>
+	{
 		getDoctorsData();
-		return () => {};
-	}, [getDoctorsData]);
+		return () => { };
+	}, [ getDoctorsData ]);
 	const columns = [
 		{
 			title: 'Name',
@@ -70,14 +81,14 @@ function DoctorList() {
 			title: 'Phone',
 			dataIndex: 'phoneNumber',
 			key: 'phone',
-			responsive: ['md'],
+			responsive: [ 'md' ],
 		},
 		{
 			title: 'Created At',
 			dataIndex: 'createdAt',
 			key: 'createdAt',
 			render: (record, text) => moment(record.createdAt).format('DD-MM-YYYY'),
-			responsive: ['md'],
+			responsive: [ 'md' ],
 		},
 		{
 			title: 'Status',

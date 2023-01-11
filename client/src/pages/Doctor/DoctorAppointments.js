@@ -2,19 +2,22 @@ import React, { useEffect, useState, useCallback } from 'react';
 import Layout from '../../components/Layout';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from '../../redux/alertsSlice';
-import axios from 'axios';
 import { Table } from 'antd';
 import { toast } from 'react-hot-toast';
 import moment from 'moment';
+import apiConfig from '../../config/apiConfig';
 
-function DoctorAppointments() {
-	const [appointments, setAppointments] = useState([]);
+function DoctorAppointments()
+{
+	const [ appointments, setAppointments ] = useState([]);
 	const dispatch = useDispatch();
-	const getAppointmentsData = useCallback(async () => {
-		try {
+	const getAppointmentsData = useCallback(async () =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.get(
-				'/api/doctor/get-appointments-by-doctor-id',
+			const response = await apiConfig.get(
+				'/doctor/get-appointments-by-doctor-id',
 				{
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -22,20 +25,24 @@ function DoctorAppointments() {
 				}
 			);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				setAppointments(response.data.data);
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			toast.error('Something went wrong');
 			dispatch(hideLoading());
 		}
-	}, [dispatch]);
-	const changeAppointmentStatus = async (record, status) => {
-		try {
+	}, [ dispatch ]);
+	const changeAppointmentStatus = async (record, status) =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.post(
-				'/api/doctor/change-appointment-status',
+			const response = await apiConfig.post(
+				'/doctor/change-appointment-status',
 				{
 					appointmentId: record._id,
 					status: status,
@@ -47,12 +54,15 @@ function DoctorAppointments() {
 				}
 			);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				getAppointmentsData();
-			} else {
+			} else
+			{
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			toast.error(error.message);
 			dispatch(hideLoading());
 		}
@@ -112,10 +122,11 @@ function DoctorAppointments() {
 			),
 		},
 	];
-	useEffect(() => {
+	useEffect(() =>
+	{
 		getAppointmentsData();
-		return () => {};
-	}, [getAppointmentsData]);
+		return () => { };
+	}, [ getAppointmentsData ]);
 
 	return (
 		<Layout>

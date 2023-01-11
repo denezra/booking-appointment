@@ -2,28 +2,34 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Form, Input } from 'antd';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { hideLoading, showLoading } from '../redux/alertsSlice';
+import apiConfig from '../config/apiConfig';
 
-function Login() {
+function Login()
+{
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const onFinish = async values => {
-		try {
+	const onFinish = async values =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.post('/api/user/login', values);
+			const response = await apiConfig.post('/user/login', values);
 			console.log(response);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				localStorage.setItem('token', response.data.data);
 				navigate('/');
-			} else {
+			} else
+			{
 				dispatch(hideLoading());
 				toast.error(response.data.message);
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			dispatch(hideLoading());
 			toast.error('Something went wrong', error);
 		}

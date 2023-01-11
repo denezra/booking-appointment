@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from '../redux/alertsSlice';
-import axios from 'axios';
+import apiConfig from '../config/apiConfig';
 import { Table } from 'antd';
 import { toast } from 'react-hot-toast';
 import moment from 'moment';
 
-function Appointments() {
-	const [appointments, setAppointments] = useState([]);
+function Appointments()
+{
+	const [ appointments, setAppointments ] = useState([]);
 	const dispatch = useDispatch();
 
 	const columns = [
@@ -53,12 +54,15 @@ function Appointments() {
 			key: 'status',
 		},
 	];
-	useEffect(() => {
-		const getAppointmentsData = async () => {
-			try {
+	useEffect(() =>
+	{
+		const getAppointmentsData = async () =>
+		{
+			try
+			{
 				dispatch(showLoading());
-				const response = await axios.get(
-					'/api/user/get-appointments-by-user-id',
+				const response = await apiConfig.get(
+					'/user/get-appointments-by-user-id',
 					{
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -66,18 +70,20 @@ function Appointments() {
 					}
 				);
 				dispatch(hideLoading());
-				if (response.data.success) {
+				if (response.data.success)
+				{
 					toast.success(response.data.message);
 					setAppointments(response.data.data);
 				}
-			} catch (error) {
+			} catch (error)
+			{
 				toast.error('Something went wrong');
 				dispatch(hideLoading());
 			}
 		};
 		getAppointmentsData();
-		return () => {};
-	}, [appointments, dispatch]);
+		return () => { };
+	}, [ appointments, dispatch ]);
 
 	return (
 		<Layout>

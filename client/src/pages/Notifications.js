@@ -3,19 +3,22 @@ import Layout from '../components/Layout';
 import { Tabs } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from '../redux/alertsSlice';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { setUser } from '../redux/userSlice';
 import NotifTab from '../components/NotifTab';
+import apiConfig from '../config/apiConfig';
 
-function Notifications() {
+function Notifications()
+{
 	const { user } = useSelector(state => state.user);
 	const dispatch = useDispatch();
-	const markAllAsSeen = async () => {
-		try {
+	const markAllAsSeen = async () =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.post(
-				'/api/user/mark-all-notifications-as-seen',
+			const response = await apiConfig.post(
+				'/user/mark-all-notifications-as-seen',
 				{
 					userId: user._id,
 				},
@@ -26,23 +29,28 @@ function Notifications() {
 				}
 			);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				dispatch(setUser(response.data.data));
-			} else {
+			} else
+			{
 				dispatch(hideLoading());
 				toast.error(response.data.message);
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			dispatch(hideLoading());
 			toast.error('Something went wrong');
 		}
 	};
-	const deleteAll = async () => {
-		try {
+	const deleteAll = async () =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.post(
-				'/api/user/delete-all-notifications',
+			const response = await apiConfig.post(
+				'/user/delete-all-notifications',
 				{
 					userId: user._id,
 				},
@@ -53,14 +61,17 @@ function Notifications() {
 				}
 			);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				dispatch(setUser(response.data.data));
-			} else {
+			} else
+			{
 				dispatch(hideLoading());
 				toast.error(response.data.message);
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			dispatch(hideLoading());
 			toast.error('Something went wrong');
 		}

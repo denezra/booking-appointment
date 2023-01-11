@@ -1,6 +1,5 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useParams, useNavigate } from 'react-router-dom';
 import { hideLoading, showLoading } from '../redux/alertsSlice';
@@ -8,22 +7,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { DatePicker, Row, TimePicker, Col, Button } from 'antd';
 import moment from 'moment';
+import apiConfig from '../config/apiConfig';
 
-function BookAppointment() {
-	const [isAvailable, setIsAvailable] = useState(false);
-	const [date, setDate] = useState();
-	const [time, setTime] = useState();
-	const [doctor, setDoctor] = useState(null);
+function BookAppointment()
+{
+	const [ isAvailable, setIsAvailable ] = useState(false);
+	const [ date, setDate ] = useState();
+	const [ time, setTime ] = useState();
+	const [ doctor, setDoctor ] = useState(null);
 	const { user } = useSelector(state => state.user);
 	const params = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const checkAvailability = async () => {
-		try {
+	const checkAvailability = async () =>
+	{
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.post(
-				'/api/user/check-booking-availability',
+			const response = await apiConfig.post(
+				'/user/check-booking-availability',
 				{
 					doctorId: params.doctorId,
 					date: date,
@@ -36,25 +39,30 @@ function BookAppointment() {
 				}
 			);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				setIsAvailable(true);
-			} else {
+			} else
+			{
 				toast.error(response.data.message);
 				setIsAvailable(false);
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			dispatch(hideLoading());
 			toast.error('Error booking appointment');
 		}
 	};
 
-	const bookNow = async () => {
+	const bookNow = async () =>
+	{
 		setIsAvailable(false);
-		try {
+		try
+		{
 			dispatch(showLoading());
-			const response = await axios.post(
-				'/api/user/book-appointment',
+			const response = await apiConfig.post(
+				'/user/book-appointment',
 				{
 					doctorId: params.doctorId,
 					userId: user._id,
@@ -70,22 +78,27 @@ function BookAppointment() {
 				}
 			);
 			dispatch(hideLoading());
-			if (response.data.success) {
+			if (response.data.success)
+			{
 				toast.success(response.data.message);
 				navigate('/appointments');
 			}
-		} catch (error) {
+		} catch (error)
+		{
 			dispatch(hideLoading());
 			toast.error('Error booking appointment');
 		}
 	};
 
-	useEffect(() => {
-		const getDoctorData = async () => {
-			try {
+	useEffect(() =>
+	{
+		const getDoctorData = async () =>
+		{
+			try
+			{
 				dispatch(showLoading());
-				const response = await axios.post(
-					'/api/doctor/get-doctor-info-by-id',
+				const response = await apiConfig.post(
+					'/doctor/get-doctor-info-by-id',
 					{ doctorId: params.doctorId },
 					{
 						headers: {
@@ -94,15 +107,17 @@ function BookAppointment() {
 					}
 				);
 				dispatch(hideLoading());
-				if (response.data.success) {
+				if (response.data.success)
+				{
 					setDoctor(response.data.data);
 				}
-			} catch (error) {
+			} catch (error)
+			{
 				dispatch(hideLoading());
 			}
 		};
 		getDoctorData();
-	}, [dispatch, doctor, params.doctorId]);
+	}, [ dispatch, doctor, params.doctorId ]);
 	return (
 		<Layout>
 			{doctor && (
@@ -123,7 +138,7 @@ function BookAppointment() {
 						<Col span={8} sm={24} xs={24} lg={8}>
 							<h1 className="normal-text">
 								<b>Schedule: </b>
-								{doctor?.timings[0]} - {doctor?.timings[1]}
+								{doctor?.timings[ 0 ]} - {doctor?.timings[ 1 ]}
 							</h1>
 							<p>
 								<b>Phone Number: </b>
@@ -144,7 +159,8 @@ function BookAppointment() {
 							<div className="d-flex flex-column pt-2 mt-2">
 								<DatePicker
 									format="DD-MM-YYYY"
-									onChange={value => {
+									onChange={value =>
+									{
 										setIsAvailable(false);
 										setDate(moment(value).format('DD-MM-YYYY'));
 									}}
@@ -152,7 +168,8 @@ function BookAppointment() {
 								<TimePicker
 									format="HH:mm"
 									className="mt-3"
-									onChange={value => {
+									onChange={value =>
+									{
 										setIsAvailable(false);
 										setTime(moment(value).format('HH:mm'));
 									}}
@@ -160,7 +177,8 @@ function BookAppointment() {
 								{!isAvailable && (
 									<Button
 										className="primary-button mt-2 full-width-button"
-										onClick={() => {
+										onClick={() =>
+										{
 											checkAvailability();
 										}}>
 										Check Availability
@@ -169,7 +187,8 @@ function BookAppointment() {
 								{isAvailable && (
 									<Button
 										className="primary-button mt-2 full-width-button"
-										onClick={() => {
+										onClick={() =>
+										{
 											bookNow();
 										}}>
 										Book Now
