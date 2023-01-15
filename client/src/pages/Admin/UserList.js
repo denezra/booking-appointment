@@ -12,12 +12,14 @@ function UserList()
 	const dispatch = useDispatch();
 	useEffect(() =>
 	{
+		const controller = new AbortController();
 		const getUsersData = async () =>
 		{
 			try
 			{
 				dispatch(showLoading());
 				const response = await apiConfig.get('/admin/get-all-users', {
+					signal: controller.signal,
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
 					},
@@ -35,8 +37,11 @@ function UserList()
 			}
 		};
 		getUsersData();
-		return () => { };
-	}, [ dispatch, users ]);
+		return () =>
+		{
+			controller.abort()
+		};
+	}, [ dispatch ]);
 	const columns = [
 		{
 			title: 'Name',

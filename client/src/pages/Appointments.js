@@ -12,9 +12,6 @@ function Appointments()
 	const [ appointments, setAppointments ] = useState([]);
 	const dispatch = useDispatch();
 
-	const controller = new AbortController();
-
-
 	const columns = [
 		{
 			title: 'Id',
@@ -57,18 +54,19 @@ function Appointments()
 			key: 'status',
 		},
 	];
+
 	useEffect(() =>
 	{
+		const controller = new AbortController();
 		const getAppointmentsData = async () =>
 		{
 			try
 			{
 				dispatch(showLoading());
 				const response = await apiConfig.get(
-					'/user/get-appointments-by-user-id', {
-					signal: controller.signal
-				},
+					'/user/get-appointments-by-user-id',
 					{
+						signal: controller.signal,
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem('token')}`,
 						},
@@ -79,11 +77,9 @@ function Appointments()
 				{
 					toast.success(response.data.message);
 					setAppointments(response.data.data);
-					controller.abort()
 				}
 			} catch (error)
 			{
-				controller.abort()
 				toast.error('Something went wrong');
 				dispatch(hideLoading());
 			}
@@ -93,7 +89,7 @@ function Appointments()
 		{
 			controller.abort()
 		};
-	}, [ appointments, controller, dispatch ]);
+	}, [ dispatch ]);
 
 	return (
 		<Layout>

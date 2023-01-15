@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Layout from '../../components/Layout';
 import { useDispatch } from 'react-redux';
 import { hideLoading, showLoading } from '../../redux/alertsSlice';
@@ -11,6 +11,8 @@ function DoctorAppointments()
 {
 	const [ appointments, setAppointments ] = useState([]);
 	const dispatch = useDispatch();
+	const controller = useMemo(
+		() => new AbortController(), []);
 	const getAppointmentsData = useCallback(async () =>
 	{
 		try
@@ -19,6 +21,7 @@ function DoctorAppointments()
 			const response = await apiConfig.get(
 				'/doctor/get-appointments-by-doctor-id',
 				{
+					signal: controller.signal,
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
 					},
@@ -35,7 +38,7 @@ function DoctorAppointments()
 			toast.error('Something went wrong');
 			dispatch(hideLoading());
 		}
-	}, [ dispatch ]);
+	}, [ controller.signal, dispatch ]);
 	const changeAppointmentStatus = async (record, status) =>
 	{
 		try
@@ -125,8 +128,8 @@ function DoctorAppointments()
 	useEffect(() =>
 	{
 		getAppointmentsData();
-		return () => { };
-	}, [ getAppointmentsData ]);
+		return () => { controller.abort() };
+	}, [ controller, getAppointmentsData ]);
 
 	return (
 		<Layout>

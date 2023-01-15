@@ -92,6 +92,7 @@ function BookAppointment()
 
 	useEffect(() =>
 	{
+		const controller = new AbortController();
 		const getDoctorData = async () =>
 		{
 			try
@@ -101,6 +102,7 @@ function BookAppointment()
 					'/doctor/get-doctor-info-by-id',
 					{ doctorId: params.doctorId },
 					{
+						signal: controller.signal,
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem('token')}`,
 						},
@@ -117,7 +119,11 @@ function BookAppointment()
 			}
 		};
 		getDoctorData();
-	}, [ dispatch, doctor, params.doctorId ]);
+		return () =>
+		{
+			controller.abort()
+		};
+	}, [ dispatch, params.doctorId ]);
 	return (
 		<Layout>
 			{doctor && (

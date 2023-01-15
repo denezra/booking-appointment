@@ -5,8 +5,9 @@ import { Badge } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
 
-function Layout({ children }) {
-	const [collapsed, setCollapsed] = useState(false);
+function Layout({ children })
+{
+	const [ collapsed, setCollapsed ] = useState(false);
 	const { user } = useSelector(state => state.user);
 	const location = useLocation();
 	const dispatch = useDispatch();
@@ -73,8 +74,8 @@ function Layout({ children }) {
 	const menuRendering = user?.isAdmin
 		? adminMenu
 		: user?.isDoctor
-		? doctorMenu
-		: userMenu;
+			? doctorMenu
+			: userMenu;
 
 	const role = user?.isAdmin ? 'Admin' : user?.isDoctor ? 'Dentist' : 'User';
 
@@ -88,19 +89,18 @@ function Layout({ children }) {
 					</div>
 
 					<div
-						className={`${!collapsed && `menu`} ${
-							collapsed && `menu-collapse`
-						}`}>
-						{menuRendering.map(menu => {
+						className={`${!collapsed && `menu`} ${collapsed && `menu-collapse`
+							}`}>
+						{menuRendering.map(menu =>
+						{
 							const isActive = location.pathname === menu.path;
 							return (
 								<div
 									key={menu.name}
-									className={`d-flex menu-item cursor-pointer ${
-										isActive && 'active-menu-item'
-									}`}
-									onClick={() => {
-										console.log(menu.path);
+									className={`d-flex menu-item cursor-pointer ${isActive && 'active-menu-item'
+										}`}
+									onClick={() =>
+									{
 										navigate(menu.path);
 									}}>
 									<i className={menu.icon}></i>
@@ -110,7 +110,8 @@ function Layout({ children }) {
 						})}
 						<div
 							className={'d-flex menu-item'}
-							onClick={() => {
+							onClick={() =>
+							{
 								localStorage.clear();
 								dispatch(setUser(null));
 								navigate('/login');

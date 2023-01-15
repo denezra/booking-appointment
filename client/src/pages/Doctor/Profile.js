@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Layout from '../../components/Layout';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,8 @@ function Profile()
 	const navigate = useNavigate();
 	const { user } = useSelector(state => state.user);
 	const [ doctor, setDoctor ] = useState(null);
+	const controller = useMemo(
+		() => new AbortController(), []);
 	const onFinish = async values =>
 	{
 		try
@@ -61,6 +63,7 @@ function Profile()
 				'/doctor/get-doctor-info-by-user-id',
 				{ userId: user._id },
 				{
+					signal: controller.signal,
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
 					},
@@ -75,12 +78,13 @@ function Profile()
 		{
 			dispatch(hideLoading());
 		}
-	}, [ dispatch, user._id ]);
+	}, [ controller.signal, dispatch, user._id ]);
 
 	useEffect(() =>
 	{
 		getDoctorData();
-	}, [ user, getDoctorData ]);
+		return () => { controller.abort() };
+	}, [ getDoctorData, controller ]);
 	return (
 		<Layout>
 			<h1 className="page-title">Doctors Profile</h1>

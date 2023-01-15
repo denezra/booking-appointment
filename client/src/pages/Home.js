@@ -14,12 +14,14 @@ function Home()
 
 	useEffect(() =>
 	{
+		const controller = new AbortController();
 		const getData = async () =>
 		{
 			try
 			{
 				dispatch(showLoading());
 				const response = await apiConfig.get('/user/get-all-approved-doctors', {
+					signal: controller.signal,
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
 					},
@@ -36,6 +38,10 @@ function Home()
 			}
 		};
 		getData();
+		return () =>
+		{
+			controller.abort()
+		};
 	}, [ dispatch ]);
 	return (
 		<Layout>
